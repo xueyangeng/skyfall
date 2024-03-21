@@ -1,0 +1,48 @@
+{
+  "name": "skyfall",
+  "version": "1.0.1",
+  "private": false,
+  "scripts": {
+    "start": "dotenv -e .env.development npm run dev",
+    "build:testing": "dotenv -e .env.testing react-app-rewired build",
+    "build:production": "npm run supportedBrowsers && dotenv -e .env.production react-app-rewired build",
+    "build:snapshot": "dotenv -e .env.snapshot react-app-rewired build",
+    "analyze": "dotenv -e .env.analyze react-app-rewired build"
+  },
+  "bin": {
+    "skyfall": "./index.js"
+  },
+  "dependencies": {
+    "@mt/sdk-ryze": "^0.2.0",
+    "chalk": "^4.1.2",
+    "commander": "^8.2.0",
+    "inquirer": "^8.2.0",
+    "node-emoji": "^1.11.0",
+    "request": "^2.88.2",
+    "rollup": "^2.58.0",
+    "@babel/cli": "^7.15.7",
+    "@babel/core": "^7.15.8",
+    "@babel/preset-env": "^7.15.8",
+    "core-js": "^3.18.3",
+    "cssnano": "^5.0.8",
+    "postcss": "^8.3.9",
+    "postcss-cli": "^9.0.1",
+    "postcss-cssnext": "^3.1.1",
+    "postcss-nested": "^5.0.6",
+    "postcss-simple-vars": "^6.0.3",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-dts": "^4.0.0",
+    "rollup-plugin-image": "^1.0.2",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-postcss": "^4.0.1",
+    "rollup-plugin-replace": "^2.2.0",
+    "rollup-plugin-serve": "^1.1.0",
+    "rollup-plugin-typescript2": "^0.30.0",
+    "rollup-plugin-uglify": "^6.0.4",
+    "rollup-plugin-visualizer": "^5.5.2",
+    "rollup-watch": "^4.3.1",
+    "typescript": "^4.4.4"
+  }
+}
