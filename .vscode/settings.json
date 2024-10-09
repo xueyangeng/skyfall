@@ -1,3 +1,58 @@
 {
-    "liveServer.settings.port": 5501
-}
+    "files.autoSave": "afterDelay",
+    // #每次保存的时候自动格式化
+    "editor.formatOnSave": true,
+    "gitlens.gitCommands.closeOnFocusOut": true,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "files.associations": {
+      "*.cjson": "jsonc",
+      "*.wxss": "css",
+      "*.wxs": "javascript"
+    },
+    "emmet.includeLanguages": {
+      "wxml": "html"
+    },
+    "minapp-vscode.disableAutoConfig": true,
+    //制表符符号eslint
+    "editor.tabSize": 2,
+    // 设置此项处理ts修饰符报错
+    "js/ts.implicitProjectConfig.experimentalDecorators": true,
+    // 当在 VS Code 中重命名或移动文件时，启用或禁用自动更新导入路径
+    "javascript.updateImportsOnFileMove.enabled": "never",
+    // 保留代码结尾的分号
+    "prettier.semi": true,
+    //  #使用单引号替代双引号
+    "prettier.singleQuote": false,
+    // 尽可能控制尾随逗号的打印
+    "prettier.trailingComma": "none",
+    // 指定每行代码的最佳长度， 如果超出长度则换行。
+    "prettier.printWidth": 100,
+    "eslint.options": {
+      "extensions": [
+        ".js",
+      ]
+    },
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[html]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[less]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascriptreact]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    // 配置内配置对 .ts 文件的格式化
+    "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescriptreact]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+  }

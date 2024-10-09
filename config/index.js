@@ -1,16 +1,18 @@
 import path from "path";
 import util from "util";
 import babel from "rollup-plugin-babel";
-// import resolve from "rollup-plugin-node-resolve";
+import resolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
 import json from "rollup-plugin-json";
 import replace from "rollup-plugin-replace";
 import { uglify } from "rollup-plugin-uglify";
 import visualizer from "rollup-plugin-visualizer";
-// import serve from "rollup-plugin-serve";
+import serve from "rollup-plugin-serve";
+import livereload from "rollup-plugin-livereload";
 import typescript from "rollup-plugin-typescript2";
 import image from "rollup-plugin-image";
 import dts from "rollup-plugin-dts";
+import filesize from "rollup-plugin-filesize";
 import postcss from "rollup-plugin-postcss";
 // postcss plugins
 import simplevars from "postcss-simple-vars";
@@ -23,30 +25,35 @@ const { checkFileExists } = require("../util/index");
 const { config: initConfig } = require("../config");
 
 module.exports = (mode) => {
-  const env = mode.g;
-  let currentInput = initConfig.input;
-  let currentOutput = {
-    file: initConfig.output,
-    format: "umd",
-    name: "bundle"
-  };
-  const currentPlugins = [
+  const type = mode.g;
+  const env = process.env.NODE_ENV;
+  // 传入的config
+  const {
+    input: initInput,
+    output: initOutput,
+    name: initName = "bundle",
+    servePlugin: initServePlugin = false,
+    livereloadPlugin: initLivereloadPlugin = false,
+    resolvePlugin: initResolvePlugin = false
+  } = initConfig;
+
+  // 打包使用的插件
+  const plugins = [
     replace({
-      ENV: JSON.stringify(process.env.NODE_ENV || "development")
+      ENV: JSON.stringify(env || "development")
     }),
     // node模块正确加载
     commonjs({
       include: path.resolve("./", "node_modules/**")
     }),
     // node模块正确加载
-    // resolve(),
-    // 全局环境变量
+    initResolvePlugin && resolve(),
     // 编译ts文件
     checkFileExists("tsconfig.json") &&
       typescript({
         tsconfigOverride: {
           compilerOptions: {
-            declaration: false //生成相应的 .d.ts文件
+            declaration: false // 禁止生成相应的 .d.ts文件 自己生成
           }
         }
       }),
@@ -70,42 +77,51 @@ module.exports = (mode) => {
         ]
       ]
     }),
-    // process.env.NODE_ENV !== "production" &&
-    //   serve({
-    //     open: true, // 是否打开浏览器
-    //     contentBase: "src", // 入口html的文件位置
-    //     historyApiFallback: true, // Set to true to return index.html instead of 404
-    //     host: "localhost",
-    //     port: 10001 // 五位数
-    //   }),
-    env == "vis" &&
+    // 启动服务， 查看包引用变化
+    env !== "production" && initServePlugin && serve(initServePlugin),
+    // 监听文件变化刷新浏览器
+    env !== "production" && initLivereloadPlugin && livereload(initLivereloadPlugin),
+    type == "vis" &&
       visualizer({
         open: true,
         gzipSize: true,
         brotliSize: true
       })
   ];
-  const outDir = initConfig.output && initConfig.output.split("/")[0];
-  const dtsConfig = {
-    input: currentInput,
-    output: { file: outDir + "/index.d.ts", format: "es" },
-    plugins: [...currentPlugins, dts()]
+  // 处理过后的output配置
+  let currentOutput = {
+    file: initOutput,
+    format: "umd",
+    name: initName
   };
-  if (util.isObject(initConfig.input)) {
+  // 多文件打包
+  if (util.isObject(initInput)) {
     currentOutput = {
-      dir: initConfig.output,
+      dir: initOutput,
       format: "es"
     };
-    dtsConfig.output = currentOutput;
   }
-  let config = {
-    input: currentInput,
+  // 打包生成js的配置
+  const config = {
+    input: initInput,
     output: currentOutput,
-    plugins: [...currentPlugins, process.env.NODE_ENV === "production" && uglify()]
+    plugins: [...plugins, ...(env === "production" ? [uglify(), filesize()] : [])]
   };
-  let currentConfig = [config];
+  let finalConfig = config;
   if (checkFileExists("tsconfig.json")) {
-    currentConfig = [config, dtsConfig];
+    // 打包生成dts的配置
+    const dtsConfig = {
+      input: initInput,
+      output: {
+        file: initOutput.replace(".js", ".d.ts"),
+        format: "es"
+      },
+      plugins: [...plugins, dts()]
+    };
+    if (currentOutput.format === "es") {
+      dtsConfig.output = currentOutput;
+    }
+    finalConfig = [config, dtsConfig];
   }
-  return currentConfig;
+  return finalConfig;
 };

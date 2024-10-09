@@ -37,18 +37,47 @@ skyfall upload  // 打包后上传cdn并输出cdn地址
 ## skyfall.js
 
 #单个文件
+
+```js
 module.exports = {
-  name: 'skyfall', // 项目名称
-  input: 'index.js', // 入口文件路径
-  output: 'dist/build.js', // 出口文件路径
-} 
+  name: "skyfall", // 项目名称
+  input: "index.js", // 入口文件路径
+  output: "dist/build.js", // 出口文件路径
+  servePlugin: {
+    open: true, // 是否打开浏览器
+    contentBase: "src", // 入口html的文件位置
+    historyApiFallback: true, // Set to true to return index.html instead of 404
+    host: "localhost",
+    port: 10001 // 五位数
+  },
+  livereloadPlugin: {
+    watch: "src/" // 监听文件夹;
+  },
+  resolvePlugin: true // 是否使用rollup-plugin-node-resolve 插件
+};
+```
+
 #多个文件
+
+```js
 module.exports = {
   name: 'skyfall', // 项目名称
   input: {
-  index: "index.js",
-  aa: "aa/index.js",
-  bb: "bb/index.js",
+    index: "index.js",
+    aa: "aa/index.js",
+    bb: "bb/index.js",
   } // 入口文件路径
   output: 'dist', // 出口文件夹路径
+  servePlugin: {
+    open: true, // 是否打开浏览器
+    contentBase: "src", // 入口html的文件位置
+    historyApiFallback: true, // Set to true to return index.html instead of 404
+    host: "localhost",
+    port: 10001 // 五位数
+  },
+  livereloadPlugin: {
+    watch: 'src/', // 监听文件夹;
+  },
+  resolvePlugin: true,  // 是否使用rollup-plugin-node-resolve 插件
 }
+```
